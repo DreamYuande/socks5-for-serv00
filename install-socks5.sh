@@ -7,7 +7,7 @@ echo -e "\e[32m
  \___ \| | | | |   | ' /\___ \___ \ 
   ___) | |_| | |___| . \ ___) |__) |           不要直连
  |____/ \___/ \____|_|\_\____/____/            没有售后   
- 缝合怪：cmliu 原作者们：RealNeoMan、k0baya、eooce
+ 缝合怪：cmliu，DreamYuande 原作者们：RealNeoMan、k0baya、eooce
 \e[0m"
 
 # 获取当前用户名
@@ -272,4 +272,4 @@ else
   echo "不添加 crontab 计划任务"
 fi
 
-echo "脚本执行完成。致谢：RealNeoMan、k0baya、eooce"
+echo "脚本执行完成。致谢：RealNeoMan、k0baya、eooce、cmliu"
