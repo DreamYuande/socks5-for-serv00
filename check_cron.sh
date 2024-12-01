@@ -42,7 +42,7 @@ else
     (crontab -l; echo "@reboot pkill -kill -u $(whoami) && ${CRON_S5}") | crontab -
     (crontab -l | grep -F "*/12 * * * * pgrep -x \"s5\" > /dev/null || ${CRON_S5}") || \
     (crontab -l; echo "*/12 * * * * pgrep -x \"s5\" > /dev/null || ${CRON_S5}") | crontab -
-  elif [ -x "${XRAYR_PATH}/XrayR" ] && [ -f "${XRAYR_CONFIG}" ]; then
+  elif [ -e "${XRAYR_PATH}/XrayR" ]; then
     echo "添加 XrayR 的 crontab 重启任务"
     (crontab -l | grep -F "@reboot pkill -kill -u $(whoami) && ${REBOOT_XRAYR}") || \
     (crontab -l; echo "@reboot pkill -kill -u $(whoami) && ${REBOOT_XRAYR}") | crontab -
