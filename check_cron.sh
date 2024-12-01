@@ -5,7 +5,7 @@ WORKDIR="/home/${USER}/.nezha-agent"
 FILE_PATH="/home/${USER}/.s5"
 PM2_PATH="/home/${USER}/.npm-global/lib/node_modules/pm2/bin/pm2"
 XRAYR_PATH="/usr/home/${USER}/XrayR-freebsd-64"
-XRAYR_CONFIG="${XRAYR_PATH}/config.yml"
+
 
 CRON_S5="nohup ${FILE_PATH}/s5 -c ${FILE_PATH}/config.json >/dev/null 2>&1 &"
 CRON_NEZHA="nohup ${WORKDIR}/start.sh >/dev/null 2>&1 &"
@@ -16,7 +16,12 @@ REBOOT_COMMAND="@reboot pkill -kill -u $(whoami) && $PM2_PATH resurrect >> /home
 REBOOT_XRAYR="nohup ${XRAYR_PATH}/XrayR --config ${XRAYR_CONFIG} >/dev/null 2>&1 &"
 
 echo "检查并添加 crontab 任务"
-
+if [ -e "${XRAYR_PATH}/XrayR" ]; then
+    echo "添加 XrayR 的 crontab 重启任务"
+    (crontab -l | grep -F "@reboot pkill -kill -u $(whoami) && ${REBOOT_XRAYR}") || \
+    (crontab -l; echo "@reboot pkill -kill -u $(whoami) && ${REBOOT_XRAYR}") | crontab -
+    (crontab -l | grep -F "*/12 * * * * ${CRON_XRAYR}") || \
+    (crontab -l; echo "*/12 * * * * ${CRON_XRAYR}") | crontab -
 if [ "$(command -v pm2)" == "/home/${USER}/.npm-global/bin/pm2" ]; then
   echo "已安装 pm2，并返回正确路径，启用 pm2 保活任务"
   (crontab -l | grep -F "$REBOOT_COMMAND") || (crontab -l; echo "$REBOOT_COMMAND") | crontab -
@@ -42,11 +47,5 @@ else
     (crontab -l; echo "@reboot pkill -kill -u $(whoami) && ${CRON_S5}") | crontab -
     (crontab -l | grep -F "*/12 * * * * pgrep -x \"s5\" > /dev/null || ${CRON_S5}") || \
     (crontab -l; echo "*/12 * * * * pgrep -x \"s5\" > /dev/null || ${CRON_S5}") | crontab -
-  elif [ -e "${XRAYR_PATH}/XrayR" ]; then
-    echo "添加 XrayR 的 crontab 重启任务"
-    (crontab -l | grep -F "@reboot pkill -kill -u $(whoami) && ${REBOOT_XRAYR}") || \
-    (crontab -l; echo "@reboot pkill -kill -u $(whoami) && ${REBOOT_XRAYR}") | crontab -
-    (crontab -l | grep -F "*/12 * * * * ${CRON_XRAYR}") || \
-    (crontab -l; echo "*/12 * * * * ${CRON_XRAYR}") | crontab -
   fi
 fi
